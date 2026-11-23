@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>BookNotes | My Reading Journal</title>
+
+  <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+
+  <header class="site-header">
+    <a class="logo" href="/">Book<span>Notes.</span></a>
+
+    <nav>
+      <a href="/">My Library</a>
+      <a class="nav-button" href="/search">+ Add a Book</a>
+    </nav>
+  </header>
+
+  <main class="container">
+
+    <section class="hero">
+      <p class="eyebrow">YOUR PERSONAL READING JOURNAL</p>
+
+      <h1>
+        Every book leaves<br>
+        <span>a little wisdom.</span>
+      </h1>
+
+      <p class="intro">
+        Keep the ideas, lessons, and stories
+        you don't want to forget.
+      </p>
+
+      <a class="primary-button" href="/search">
+        Find a Book
+      </a>
+    </section>
+
+    <section class="library-section">
+
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">YOUR COLLECTION</p>
+          <h2>My Library</h2>
+        </div>
+
+        <form action="/" method="GET" class="sort-form">
+          <label for="sort">Sort by:</label>
+
+          <select
+            id="sort"
+            name="sort"
+            onchange="this.form.submit()"
+          >
+            <option value="date"
+              <%= sort === "date" ? "selected" : "" %>>
+              Recently Read
+            </option>
+
+            <option value="rating"
+              <%= sort === "rating" ? "selected" : "" %>>
+              Highest Rating
+            </option>
+
+            <option value="title"
+              <%= sort === "title" ? "selected" : "" %>>
+              Title A-Z
+            </option>
+          </select>
+        </form>
+      </div>
+
+      <% if (error) { %>
+        <p class="notice error"><%= error %></p>
+      <% } %>
+
+      <% if (books.length === 0) { %>
+
+        <div class="empty-state">
+          <div class="empty-icon">📚</div>
+
+          <h3>Your reading shelf is waiting.</h3>
+
+          <p>
+            Add your first book and start collecting
+            the ideas that matter.
+          </p>
+
+          <a href="/search" class="primary-button">
+            Add Your First Book
+          </a>
+        </div>
+
+      <% } else { %>
+
+        <div class="book-grid">
+
+          <% books.forEach(book => { %>
+
+            <article class="book-card">
+
+              <% if (book.cover_id) { %>
+
+                <img
+                  class="cover"
+                  src="https://covers.openlibrary.org/b/id/<%= book.cover_id %>-M.jpg"
+                  alt="Cover of <%= book.title %>"
+                  loading="lazy"
+                >
+
+              <% } else { %>
+
+                <div class="cover-placeholder">
+                  BookNotes
+                </div>
+
+              <% } %>
+
+              <div class="book-info">
+
+                <h3><%= book.title %></h3>
+
+                <p class="author">
+                  <%= book.author %>
+                </p>
+
+                <% if (book.published_year) { %>
+                  <p class="muted">
+                    Published <%= book.published_year %>
+                  </p>
+                <% } %>
+
+                <p class="rating">
+                  <%= book.rating
+                    ? "★".repeat(book.rating) +
+                      "☆".repeat(5 - book.rating)
+                    : "Not rated yet" %>
+                </p>
+
+                <% if (book.date_read) { %>
+                  <p class="muted">
+                    Read: <%= new Date(book.date_read).toLocaleDateString() %>
+                  </p>
+                <% } %>
+
+                <% if (book.notes) { %>
+                  <p class="notes-preview">
+                    <%= book.notes %>
+                  </p>
+                <% } %>
+
+                <div class="card-actions">
+
+                  <a
+                    class="small-button"
+                    href="/books/<%= book.id %>/edit"
+                  >
+                    Edit Notes
+                  </a>
+
+                  <form
+                    action="/books/<%= book.id %>/delete"
+                    method="POST"
+                    onsubmit="return confirm('Delete this book?');"
+                  >
+                    <button class="delete-button" type="submit">
+                      Delete
+                    </button>
+                  </form>
+
+                </div>
+
+              </div>
+
+            </article>
+
+          <% }) %>
+
+        </div>
+
+      <% } %>
+
+    </section>
+
+  </main>
+
+  <footer>
+    Made for readers who want to remember.
+  </footer>
+
+</body>
+</html>

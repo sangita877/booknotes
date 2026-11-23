@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Search Books | BookNotes</title>
+
+  <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+
+  <header class="site-header">
+    <a class="logo" href="/">Book<span>Notes.</span></a>
+
+    <nav>
+      <a href="/">My Library</a>
+      <a class="nav-button" href="/search">+ Add a Book</a>
+    </nav>
+  </header>
+
+  <main class="container narrow">
+
+    <a href="/" class="back-link">← Back to My Library</a>
+
+    <p class="eyebrow">OPEN LIBRARY SEARCH</p>
+
+    <h1 class="page-title">
+      Find your next<br>
+      <span>book to remember.</span>
+    </h1>
+
+    <p class="intro">
+      Search by book title and add your selection
+      to your personal library.
+    </p>
+
+    <form action="/search" method="GET" class="search-form">
+
+      <input
+        type="search"
+        name="title"
+        placeholder="Enter a book title..."
+        value="<%= title %>"
+        required
+      >
+
+      <button type="submit" class="primary-button">
+        Search
+      </button>
+
+    </form>
+
+    <% if (error) { %>
+      <p class="notice error"><%= error %></p>
+    <% } %>
+
+    <% if (title && results.length === 0 && !error) { %>
+      <p class="notice">
+        No books found. Try another title.
+      </p>
+    <% } %>
+
+    <% if (results.length > 0) { %>
+
+      <h2 class="results-title">Search Results</h2>
+
+      <div class="results-list">
+
+        <% results.forEach(book => { %>
+
+          <article class="result-card">
+
+            <% if (book.coverId) { %>
+
+              <img
+                class="result-cover"
+                src="https://covers.openlibrary.org/b/id/<%= book.coverId %>-M.jpg"
+                alt="Book cover"
+                loading="lazy"
+              >
+
+            <% } else { %>
+
+              <div class="result-cover cover-placeholder">
+                Book
+              </div>
+
+            <% } %>
+
+            <div class="result-details">
+
+              <h3><%= book.title %></h3>
+
+              <p><%= book.author %></p>
+
+              <p class="muted">
+                <%= book.year || "Publication year unavailable" %>
+              </p>
+
+            </div>
+
+            <form action="/books" method="POST">
+
+              <input type="hidden" name="title" value="<%= book.title %>">
+              <input type="hidden" name="author" value="<%= book.author %>">
+              <input type="hidden" name="year" value="<%= book.year %>">
+              <input type="hidden" name="coverId" value="<%= book.coverId %>">
+              <input type="hidden" name="isbn" value="<%= book.isbn %>">
+
+              <button type="submit" class="small-button">
+                + Add
+              </button>
+
+            </form>
+
+          </article>
+
+        <% }) %>
+
+      </div>
+
+    <% } %>
+
+  </main>
+
+  <footer>
+    Made for readers who want to remember.
+  </footer>
+
+</body>
+</html>

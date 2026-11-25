@@ -1,4 +1,3 @@
-
 import pg from "pg";
 import dotenv from "dotenv";
 
@@ -11,7 +10,16 @@ const db = new Pool({
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
+  port: Number(process.env.DB_PORT),
 });
+
+db.connect()
+  .then((client) => {
+    console.log("Database connected successfully!");
+    client.release();
+  })
+  .catch((error) => {
+    console.error("Database connection failed:", error.message);
+  });
 
 export default db;
